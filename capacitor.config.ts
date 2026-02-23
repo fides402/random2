@@ -6,6 +6,9 @@ const config: CapacitorConfig = {
     webDir: "dist",
     android: {
         minWebViewVersion: 60
+    },
+    server: {
+        cleartext: true
     }
 };
 
