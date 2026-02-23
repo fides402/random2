@@ -46,10 +46,16 @@ jobs:
         working-directory: ./android
         run: ./gradlew assembleRelease
 
+      - name: Sign APK
+        run: |
+          keytool -genkey -v -keystore release.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000 -storepass password -keypass password -dname "CN=Antigravity, OU=Dev, O=Dev, L=City, S=State, C=US"
+          BUILD_TOOLS_VERSION=$(ls $ANDROID_HOME/build-tools | sort -r | head -n 1)
+          $ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/apksigner sign --ks release.keystore --ks-pass pass:password --ks-key-alias my-key-alias --key-pass pass:password --out android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/app-release-unsigned.apk
+
       - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
-          files: android/app/build/outputs/apk/release/app-release-unsigned.apk
+          files: android/app/build/outputs/apk/release/app-release.apk
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ github.ref_name }}
           draft: false
