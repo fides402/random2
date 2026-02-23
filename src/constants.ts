@@ -1,4 +1,4 @@
-export const BACKEND_URL = "https://random2-50e8a599-uc.a.run.app";
+export const BACKEND_URL = "https://ais-dev-pep5ygtummli2gnbg3sz2v-137835673715.europe-west2.run.app";
 
 export const GENRES = [
   "Rock",
