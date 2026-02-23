@@ -8,7 +8,8 @@ const config: CapacitorConfig = {
         minWebViewVersion: 60
     },
     server: {
-        cleartext: true
+        cleartext: true,
+        androidScheme: "https"
     }
 };
 

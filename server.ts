@@ -11,13 +11,30 @@ async function startServer() {
 
   app.use(express.json());
 
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin === 'capacitor://localhost' || origin === 'http://localhost' || origin === 'https://localhost') {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+      return;
+    }
+    next();
+  });
+
   const DISCOGS_TOKEN = process.env.DISCOGS_TOKEN || "ZVQpZIZeFkvNaxSKslHgiAEhhwpvwSfXKLJQiXGA";
 
   // API routes
   app.get("/api/random-release", async (req, res) => {
     try {
       const { genre, style, year, country, type = 'release' } = req.query;
-      
+
       console.log(`Searching with: genre=${genre}, style=${style}, year=${year}, country=${country}`);
 
       // Step 1: Get total count for the search query
@@ -31,7 +48,7 @@ async function startServer() {
       if (genre) searchParams.append('genre', genre as string);
       if (style) searchParams.append('style', style as string);
       if (country) searchParams.append('country', country as string);
-      
+
       // Handle decade selection
       if (year) {
         if (year.toString().length === 3) {
@@ -59,7 +76,7 @@ async function startServer() {
       while (attempts < MAX_ATTEMPTS) {
         attempts++;
         const randomPage = Math.floor(Math.random() * maxItems) + 1;
-        
+
         const randomResponse = await axios.get(`${searchUrl}&page=${randomPage}`, {
           headers: { 'User-Agent': 'DiscogsRandomizer/1.0' }
         });
@@ -69,7 +86,7 @@ async function startServer() {
           const detailsResponse = await axios.get(`https://api.discogs.com/releases/${release.id}?token=${DISCOGS_TOKEN}`, {
             headers: { 'User-Agent': 'DiscogsRandomizer/1.0' }
           });
-          
+
           const fullRelease = detailsResponse.data;
           if (fullRelease.videos && fullRelease.videos.length > 0) {
             console.log(`Found release with videos after ${attempts} attempts: ${fullRelease.title}`);
