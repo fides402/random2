@@ -1,3 +1,5 @@
+export const BACKEND_URL = "https://random2-50e8a599-uc.a.run.app";
+
 export const GENRES = [
   "Rock",
   "Electronic",

@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Music, 
-  Shuffle, 
-  ExternalLink, 
-  Calendar, 
-  Tag, 
-  Disc, 
-  ChevronDown, 
-  Play, 
+import {
+  Music,
+  Shuffle,
+  ExternalLink,
+  Calendar,
+  Tag,
+  Disc,
+  ChevronDown,
+  Play,
   Info,
   Loader2,
   Volume2,
   Globe
 } from 'lucide-react';
-import { GENRES, STYLES, DECADES, COUNTRIES } from './constants';
+import { BACKEND_URL, GENRES, STYLES, DECADES, COUNTRIES } from './constants';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -40,7 +40,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [release, setRelease] = useState<Release | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [genre, setGenre] = useState("");
   const [style, setStyle] = useState("");
   const [decade, setDecade] = useState("");
@@ -56,7 +56,7 @@ export default function App() {
       if (decade) params.append('year', decade);
       if (country) params.append('country', country);
 
-      const response = await fetch(`/api/random-release?${params.toString()}`);
+      const response = await fetch(`${BACKEND_URL}/api/random-release?${params.toString()}`);
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || "Failed to fetch release");
@@ -94,7 +94,7 @@ export default function App() {
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         <div className="relative group">
           <label className="absolute -top-2 left-3 px-1 bg-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider text-white/40 z-10">Genre</label>
-          <select 
+          <select
             value={genre}
             onChange={(e) => setGenre(e.target.value)}
             className="w-full h-14 pl-4 pr-10 bg-white/5 border border-white/10 rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/10 transition-all cursor-pointer text-sm text-white"
@@ -107,7 +107,7 @@ export default function App() {
 
         <div className="relative group">
           <label className="absolute -top-2 left-3 px-1 bg-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider text-white/40 z-10">Style</label>
-          <select 
+          <select
             value={style}
             onChange={(e) => setStyle(e.target.value)}
             className="w-full h-14 pl-4 pr-10 bg-white/5 border border-white/10 rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/10 transition-all cursor-pointer text-sm text-white"
@@ -120,7 +120,7 @@ export default function App() {
 
         <div className="relative group">
           <label className="absolute -top-2 left-3 px-1 bg-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider text-white/40 z-10">Era</label>
-          <select 
+          <select
             value={decade}
             onChange={(e) => setDecade(e.target.value)}
             className="w-full h-14 pl-4 pr-10 bg-white/5 border border-white/10 rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/10 transition-all cursor-pointer text-sm text-white"
@@ -132,7 +132,7 @@ export default function App() {
 
         <div className="relative group">
           <label className="absolute -top-2 left-3 px-1 bg-[#0a0a0a] text-[10px] font-bold uppercase tracking-wider text-white/40 z-10">Country</label>
-          <select 
+          <select
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             className="w-full h-14 pl-4 pr-10 bg-white/5 border border-white/10 rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-white/10 transition-all cursor-pointer text-sm text-white"
@@ -179,7 +179,7 @@ export default function App() {
               <div className="bg-red-900/20 border border-red-800/30 text-red-400 p-4 rounded-2xl text-center text-sm w-full">
                 {error}
               </div>
-              <button 
+              <button
                 onClick={() => {
                   setGenre("");
                   setStyle("");
@@ -206,8 +206,8 @@ export default function App() {
               <div className="lg:col-span-5 space-y-6">
                 <div className="aspect-square bg-white/5 rounded-3xl overflow-hidden shadow-2xl relative group">
                   {release.images && release.images[0] ? (
-                    <img 
-                      src={release.images[0].resource_url} 
+                    <img
+                      src={release.images[0].resource_url}
                       alt={release.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       referrerPolicy="no-referrer"
@@ -237,7 +237,7 @@ export default function App() {
               {/* Details */}
               <div className="lg:col-span-7 space-y-8">
                 <div>
-                  <motion.h2 
+                  <motion.h2
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="text-4xl md:text-6xl font-serif font-bold mb-2 leading-tight"
@@ -296,20 +296,20 @@ export default function App() {
 
                 {/* External Links */}
                 <div className="flex flex-wrap gap-4 pt-4">
-                  <a 
-                    href={release.uri} 
-                    target="_blank" 
+                  <a
+                    href={release.uri}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-full text-sm font-medium hover:bg-white hover:text-black hover:border-white transition-all"
                   >
                     View on Discogs
                     <ExternalLink className="w-4 h-4" />
                   </a>
-                  
+
                   {release.videos && release.videos[0] && (
-                    <a 
-                      href={release.videos[0].uri} 
-                      target="_blank" 
+                    <a
+                      href={release.videos[0].uri}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-6 py-3 bg-[#FF0000] text-white rounded-full text-sm font-medium hover:bg-[#CC0000] transition-all shadow-lg shadow-red-500/20"
                     >
@@ -323,7 +323,7 @@ export default function App() {
           )}
 
           {!release && !loading && !error && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-20 text-white/20"

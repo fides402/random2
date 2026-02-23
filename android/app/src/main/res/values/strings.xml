@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Discogs Randomizer</string>
+    <string name="title_activity_main">Discogs Randomizer</string>
+    <string name="package_name">com.fides402.random2</string>
+    <string name="custom_url_scheme">com.fides402.random2</string>
+</resources>
